@@ -7,4 +7,9 @@ using Unity.Mathematics;
 public struct PlayerPiece : IBufferElementData
 {
     public int2 value;
+
+    public PlayerPiece(int x, int y)
+    {
+        value = new int2(x, y);
+    }
 }

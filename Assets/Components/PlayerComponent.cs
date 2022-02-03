@@ -6,10 +6,12 @@ using Unity.Mathematics;
 [Serializable, GenerateAuthoringComponent]
 public struct PlayerComponent : IComponentData
 {
-    public int textureID;
+    public byte textureID;
     public int lines, frames;
-    public bool isControllable;
-    public float LockDelay, LockDelayf, DAS, SDF, ARE, AREf, AREline, lineDelay, gravity, fallenTiles;
+    public bool isControllable, pieceSpawned, touchedGround;
+    public float LockDelay, LockTicks, delayedAutoShift, delayedAutoShift_L, delayedAutoShift_R, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
+    public bool4x2 inputs;
     public int2 posToMove;
-    public int lineDelayf;
+    public float shiftPos;
+    public Unity.Mathematics.Random random;
 }

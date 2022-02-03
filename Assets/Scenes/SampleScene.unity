@@ -365,20 +365,34 @@ MonoBehaviour:
   lines: 0
   frames: 0
   isControllable: 0
+  touchedGround: 0
   LockDelay: 0
-  LockDelayf: 0
+  LockTicks: 0
   DAS: 0
-  SDF: 0
-  ARE: 0
-  AREf: 0
-  AREline: 0
-  lineDelay: 0
+  DAS_L: 0
+  DAS_R: 0
+  softDropMultiplier: 0
+  spawnDelay: 0
+  spawnTicks: 0
+  lineSpawnDelay: 0
+  lineDropDelay: 0
+  lineDropTicks: 0
   gravity: 1
   fallenTiles: 0
+  inputs:
+    c0:
+      x: 0
+      y: 0
+      z: 0
+      w: 0
+    c1:
+      x: 0
+      y: 0
+      z: 0
+      w: 0
   posToMove:
     x: 0
     y: 0
-  lineDelayf: 0
 --- !u!114 &1487577308
 MonoBehaviour:
   m_ObjectHideFlags: 0
