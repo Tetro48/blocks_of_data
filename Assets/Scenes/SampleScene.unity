@@ -311,6 +311,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1487577304}
   - component: {fileID: 1487577307}
+  - component: {fileID: 1487577309}
+  - component: {fileID: 1487577308}
   - component: {fileID: 1487577306}
   m_Layer: 0
   m_Name: PlayerContainer
@@ -359,5 +361,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06bf030c5da40f94faa8cf3dcb049fe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textureID: 0
   lines: 0
+  frames: 0
   isControllable: 0
+  LockDelay: 0
+  LockDelayf: 0
+  DAS: 0
+  SDF: 0
+  ARE: 0
+  AREf: 0
+  AREline: 0
+  lineDelay: 0
+  gravity: 1
+  fallenTiles: 0
+  posToMove:
+    x: 0
+    y: 0
+  lineDelayf: 0
+--- !u!114 &1487577308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487577302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88c538532aa9ee44db8dc8973820b53c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Values:
+  - x: 4
+    y: 25
+  - x: 5
+    y: 25
+  - x: 5
+    y: 26
+  - x: 6
+    y: 26
+--- !u!114 &1487577309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487577302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724253b9e87dad74890ff8141fe928e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Values: 80808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080

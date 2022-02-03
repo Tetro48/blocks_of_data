@@ -11,21 +11,29 @@ public class PlayerSystem : SystemBase
     {
         float deltaTime = Time.DeltaTime;
         
-        Entities.ForEach((ref PlayerComponent player) => {
+        Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece) => {
             NativeArray<bool> isLineFull = new NativeArray<bool>(40, Allocator.TempJob);
             player.fallenTiles += player.gravity * deltaTime;
             player.posToMove.y -= (int)math.floor(player.fallenTiles);
-            for (int i = 0; i < player.activePiece.Length; i++)
+            PlayerPiece modPiece = new PlayerPiece();
+            PlayerBoard modBoard = new PlayerBoard();
+            for (int i = 0; i < piece.Length; i++)
             {
-                player.activePiece[i] += player.posToMove;
+                modPiece.value = piece[i].value + player.posToMove;
+                piece[i] = modPiece;
             }
+            player.posToMove = int2.zero;
             player.fallenTiles -= math.floor(player.fallenTiles);
-            for (int y = 0; y < player.boardState.Length / 10; y++)
+            for (int y = 0; y < board.Length / 10; y++)
             {
+                for (int x = 0; x < 10; x++)
+                {
+                    if(board[x + (y * 10)].value < 128) {}
+                }
                 isLineFull[y] = true;
                 for (int i = 0; i < 10; i++)
                 {
-                    if (player.boardState[i + (y * 10)] < 128)
+                    if (board[i + (y * 10)].value < 128)
                     {
                         continue;
                     }
@@ -36,14 +44,15 @@ public class PlayerSystem : SystemBase
                 {
                     continue;
                 }
-                int count = player.boardState.Length;
+                int count = board.Length;
                 for (int i = 0; i < 10; i++)
                 {
-                    player.boardState[count - i] = 128;
+                    modBoard.value = 128;
+                    board[count - i] = modBoard;
                 }
                 for (int i = y * 10; i < count - 1; i++)
                 {
-                    player.boardState[i] = player.boardState[i+10];
+                    board[i] = board[i+10];
                 }
             }
             isLineFull.Dispose();
