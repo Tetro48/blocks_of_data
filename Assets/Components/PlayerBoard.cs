@@ -7,4 +7,6 @@ using Unity.Mathematics;
 public struct PlayerBoard : IBufferElementData
 {
     public byte value;
+    
+    public PlayerBoard(byte data) => value = data; 
 }

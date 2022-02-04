@@ -7,7 +7,7 @@ using Unity.Mathematics;
 public struct PlayerComponent : IComponentData
 {
     public byte textureID;
-    public int lines, frames;
+    public int lines, pieceID;
     public bool isControllable, pieceSpawned, touchedGround;
     public float LockDelay, LockTicks, delayedAutoShift, delayedAutoShift_L, delayedAutoShift_R, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
     public bool4x2 inputs;
