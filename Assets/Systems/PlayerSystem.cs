@@ -43,7 +43,7 @@ public class PlayerSystem : SystemBase
             }
             if (movement.x > 0.3f) player.autoShiftTicks += deltaTime * player.autoShiftRate;
             if (movement.x < -0.3f) player.autoShiftTicks -= deltaTime * player.autoShiftRate;
-            if (movement.x < 0.3f && movement.x > -0.3f)
+            if (movement.x < 0.3f && movement.x > -0.3f) player.autoShiftTicks = 0f;
             
             if (player.autoShiftTicks < -player.delayedAutoShift)
             {
