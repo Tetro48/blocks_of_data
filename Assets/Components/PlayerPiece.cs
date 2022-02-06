@@ -10,8 +10,5 @@ public struct PlayerPiece : IBufferElementData
 
     public PlayerPiece(int x, int y) => value = new int2(x, y);
     public PlayerPiece(int2 input) => value = input;
-    public static PlayerPiece operator +(PlayerPiece left, int2 right)
-    {
-        return new PlayerPiece(left.value += right);
-    }
+    public static PlayerPiece operator +(PlayerPiece left, int2 right) => new PlayerPiece(left.value += right);
 }

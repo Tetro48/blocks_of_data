@@ -58,6 +58,11 @@ public class PlayerSystem : SystemBase
                 player.posToMove.x += (int)(math.floor(player.shiftPos));
                 player.shiftPos -= math.floor(player.shiftPos);
             }
+            if (player.shiftPos < -1f)
+            {
+                player.posToMove.x += (int)(math.ceil(player.shiftPos));
+                player.shiftPos -= math.ceil(player.shiftPos);
+            }
             if(math.any(player.posToMove != int2.zero))
             if(movePiece(board, ref piece, player.posToMove))
             {
