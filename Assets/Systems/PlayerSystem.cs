@@ -72,7 +72,6 @@ public class PlayerSystem : SystemBase
                 lockPiece(ref board, ref piece, player.textureID);
                 player.pieceSpawned = false;
             }
-            checkAndClearLines(ref board);
         }).ScheduleParallel();
     }
 
@@ -150,5 +149,6 @@ public class PlayerSystem : SystemBase
             modBoard.value = textureID;
             board[coord.x + (coord.y * 10)] = modBoard;
         }
+        checkAndClearLines(ref board);
     }
 }
