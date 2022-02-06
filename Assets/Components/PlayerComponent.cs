@@ -9,7 +9,7 @@ public struct PlayerComponent : IComponentData
     public byte textureID;
     public int lines, pieceID;
     public bool isControllable, pieceSpawned, touchedGround;
-    public float LockDelay, LockTicks, delayedAutoShift, delayedAutoShift_L, delayedAutoShift_R, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
+    public float LockDelay, LockTicks, delayedAutoShift, autoShiftTicks, autoShiftRate, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
     public bool4x2 inputs;
     public int2 posToMove;
     public float shiftPos;

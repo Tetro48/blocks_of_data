@@ -363,14 +363,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textureID: 0
   lines: 0
-  frames: 0
+  pieceID: 0
   isControllable: 0
+  pieceSpawned: 0
   touchedGround: 0
   LockDelay: 0
   LockTicks: 0
-  DAS: 0
-  DAS_L: 0
-  DAS_R: 0
+  delayedAutoShift: 0
+  autoShiftTicks: 0
+  autoShiftRate: 6
   softDropMultiplier: 0
   spawnDelay: 0
   spawnTicks: 0
@@ -393,6 +394,9 @@ MonoBehaviour:
   posToMove:
     x: 0
     y: 0
+  shiftPos: 0
+  random:
+    state: 0
 --- !u!114 &1487577308
 MonoBehaviour:
   m_ObjectHideFlags: 0

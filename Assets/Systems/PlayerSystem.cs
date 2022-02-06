@@ -32,20 +32,28 @@ public class PlayerSystem : SystemBase
                 return;
             }
             player.fallenTiles += player.gravity * deltaTime;
-            if (movement.y < -0.5)
+            if (movement.y < -0.5f)
             {
                 player.fallenTiles += player.gravity * deltaTime * player.softDropMultiplier; 
             }
-            // PlayerPiece modMino = new PlayerPiece();
-            if (player.delayedAutoShift_L >= player.delayedAutoShift)
+            if (movement.y > 0.5f) 
+            {
+                player.fallenTiles = 999;
+                player.LockTicks = player.LockDelay;
+            }
+            if (movement.x > 0.3f) player.autoShiftTicks += deltaTime * player.autoShiftRate;
+            if (movement.x < -0.3f) player.autoShiftTicks -= deltaTime * player.autoShiftRate;
+            if (movement.x < 0.3f && movement.x > -0.3f)
+            
+            if (player.autoShiftTicks < -player.delayedAutoShift)
             {
                 player.shiftPos -= deltaTime * 60;
             }
-            if (player.delayedAutoShift_R >= player.delayedAutoShift)
+            if (player.autoShiftTicks >= player.delayedAutoShift)
             {
                 player.shiftPos += deltaTime * 60;
             }
-            if (math.any(player.shiftPos > new float2(0.5f,0.5f)))
+            if (player.shiftPos > 1f)
             {
                 player.posToMove.x += (int)(math.floor(player.shiftPos));
                 player.shiftPos -= math.floor(player.shiftPos);
@@ -54,10 +62,9 @@ public class PlayerSystem : SystemBase
             if(movePiece(board, ref piece, player.posToMove))
             {
                 player.LockTicks = 0f;
-                if(player.posToMove.y == 0)player.touchedGround = false;
+                // if(player.posToMove.y == 0)player.touchedGround = false;
             }
             player.posToMove = int2.zero;
-            DynamicBuffer<PlayerPiece> modPiece = piece;
             while (player.fallenTiles > 1)
             {
                 if(!movePiece(board, ref piece, new int2(0,-1)))
@@ -74,7 +81,6 @@ public class PlayerSystem : SystemBase
             }
         }).ScheduleParallel();
     }
-
     private static bool CheckCollision(DynamicBuffer<PlayerBoard> board, in int2 pos)
     {
         if (pos.x > 9 || pos.x < 0) return true;
@@ -84,25 +90,19 @@ public class PlayerSystem : SystemBase
 
     private static bool movePiece(in DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece, int2 pos)
     {
-        PlayerPiece modMino = new PlayerPiece();
         if (checkMovement(board, piece, pos))
         for (int i = 0; i < piece.Length; i++)
         {
-            modMino.value = piece[i].value + pos;
-            piece[i] = modMino;
+            piece[i] += pos;
         }
         return true;
     }
 
     private static bool checkMovement(in DynamicBuffer<PlayerBoard> board, in DynamicBuffer<PlayerPiece> piece, in int2 pos)
     {
+        //works just fine without {}
         for (int i = 0; i < piece.Length; i++)
-        {
-            if (CheckCollision(board, piece[i].value + pos))
-            {
-                return false;
-            }
-        }
+        if (CheckCollision(board, piece[i].value + pos)) return false;
         return true;
     }
 
@@ -151,4 +151,5 @@ public class PlayerSystem : SystemBase
         }
         checkAndClearLines(ref board);
     }
+    
 }

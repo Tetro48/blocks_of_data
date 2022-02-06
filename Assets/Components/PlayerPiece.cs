@@ -8,8 +8,10 @@ public struct PlayerPiece : IBufferElementData
 {
     public int2 value;
 
-    public PlayerPiece(int x, int y)
+    public PlayerPiece(int x, int y) => value = new int2(x, y);
+    public PlayerPiece(int2 input) => value = input;
+    public static PlayerPiece operator +(PlayerPiece left, int2 right)
     {
-        value = new int2(x, y);
+        return new PlayerPiece(left.value += right);
     }
 }
