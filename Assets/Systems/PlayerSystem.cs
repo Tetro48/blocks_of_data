@@ -8,6 +8,7 @@ using Unity.Transforms;
 public class PlayerSystem : SystemBase
 {
     private Inputs inputs;
+    private float2 previousMovement;
     
     protected override void OnCreate()
     {
@@ -18,13 +19,17 @@ public class PlayerSystem : SystemBase
     {
         float deltaTime = Time.DeltaTime;
         float2 movement = inputs.Main.Movement.ReadValue<UnityEngine.Vector2>();
-
+        float2 prevMovement = previousMovement;
         Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece) => 
         {
-            if (player.spawnTicks > player.spawnDelay)
+            if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
+                // UnityEngine.Debug.Log("Spawned!");
+                // piece = spawnPiece(player.random.NextInt(0,6));
                 movePiece(board, ref piece, new int2(4, 21));
+                player.spawnTicks = 0f;
                 player.pieceSpawned = true;
+                throw new System.NotImplementedException("This spawning mechanic is not implemented!");
             }
             if (!player.pieceSpawned)
             {
@@ -49,11 +54,11 @@ public class PlayerSystem : SystemBase
                 player.shiftPos = 0f;
             }
             
-            if (player.autoShiftTicks < -player.delayedAutoShift)
+            if (player.autoShiftTicks < -player.delayedAutoShift || math.any(prevMovement != movement))
             {
                 player.shiftPos -= deltaTime * 60;
             }
-            if (player.autoShiftTicks >= player.delayedAutoShift)
+            if (player.autoShiftTicks >= player.delayedAutoShift || math.any(prevMovement != movement))
             {
                 player.shiftPos += deltaTime * 60;
             }
@@ -74,21 +79,30 @@ public class PlayerSystem : SystemBase
                 // if(player.posToMove.y == 0)player.touchedGround = false;
             }
             player.posToMove = int2.zero;
+            int tilesCounted = 0;
             while (player.fallenTiles > 1)
             {
-                if(!movePiece(board, ref piece, new int2(0,-1)))
+                if (!checkMovement(board, piece, new int2(0,-1 -tilesCounted)))
                 {
+                    player.fallenTiles = 0;
                     player.touchedGround = true;
                 }
-                player.fallenTiles--;
+                else
+                {
+                    tilesCounted++;
+                    player.fallenTiles--;
+                }
             }
+            movePiece(board, ref piece, new int2(0,-tilesCounted));
             if (player.touchedGround) player.LockTicks += deltaTime;
-            if (player.LockTicks > player.LockDelay)
+            if (player.LockTicks > player.LockDelay && player.pieceSpawned)
             {
-                lockPiece(ref board, ref piece, player.textureID);
+                lockPiece(ref board, ref piece, player.textureID, ref player.lines);
+                player.LockTicks = 0f;
                 player.pieceSpawned = false;
             }
         }).ScheduleParallel();
+        previousMovement = movement;
     }
     private static bool CheckCollision(DynamicBuffer<PlayerBoard> board, in int2 pos)
     {
@@ -115,7 +129,7 @@ public class PlayerSystem : SystemBase
         return true;
     }
 
-    private static void checkAndClearLines(ref DynamicBuffer<PlayerBoard> board)
+    private static void checkAndClearLines(ref DynamicBuffer<PlayerBoard> board, ref int lineCount)
     {
         NativeArray<bool> isLineFull = new NativeArray<bool>(40, Allocator.Temp);
         PlayerBoard modBoard = new PlayerBoard();
@@ -136,6 +150,7 @@ public class PlayerSystem : SystemBase
                 continue;
             }
             int count = board.Length;
+            lineCount++;
             for (int i = 0; i < 10; i++)
             {
                 modBoard.value = 128;
@@ -149,7 +164,7 @@ public class PlayerSystem : SystemBase
         isLineFull.Dispose();
     }
 
-    private static void lockPiece(ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece, in byte textureID)
+    private static void lockPiece(ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece, in byte textureID, ref int lineCount)
     {
         for (int i = 0; i < piece.Length; i++)
         {
@@ -158,7 +173,7 @@ public class PlayerSystem : SystemBase
             modBoard.value = textureID;
             board[coord.x + (coord.y * 10)] = modBoard;
         }
-        checkAndClearLines(ref board);
+        checkAndClearLines(ref board, ref lineCount);
     }
-    
+
 }

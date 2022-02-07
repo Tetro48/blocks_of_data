@@ -294,7 +294,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 14.5, z: -38.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -367,13 +367,13 @@ MonoBehaviour:
   isControllable: 0
   pieceSpawned: 0
   touchedGround: 0
-  LockDelay: 0
+  LockDelay: 1
   LockTicks: 0
-  delayedAutoShift: 0
+  delayedAutoShift: 0.5
   autoShiftTicks: 0
   autoShiftRate: 6
-  softDropMultiplier: 0
-  spawnDelay: 0
+  softDropMultiplier: 40
+  spawnDelay: 1
   spawnTicks: 0
   lineSpawnDelay: 0
   lineDropDelay: 0
@@ -416,7 +416,7 @@ MonoBehaviour:
     y: 25
   - x: 5
     y: 26
-  - x: 6
+  - x: 4
     y: 26
 --- !u!114 &1487577309
 MonoBehaviour:
