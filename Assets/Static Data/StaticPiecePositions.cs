@@ -7,6 +7,14 @@ using Unity.Entities;
 
 public static class StaticPiecePositions
 {
+    //
+    public static readonly int2[,] JLSTZpieceRotationOffset = {
+        { int2.zero, int2.zero, int2.zero, int2.zero },
+        { int2.zero, new int2(1,0), int2.zero, new int2(-1, 0) },
+        { int2.zero, new int2(1, -1), int2.zero, new int2(-1, -1) },
+        { int2.zero, new int2(0, 2), int2.zero, new int2(0, 2) },
+        { int2.zero, new int2(1, 2), int2.zero, new int2(-1, 2) }
+    };
     public static readonly PlayerPiece[] pieceCollision = new PlayerPiece[]
     {
         new PlayerPiece(0,0), new PlayerPiece(1,0), new PlayerPiece(1,1), new PlayerPiece(0,1), // O piece rotation 0

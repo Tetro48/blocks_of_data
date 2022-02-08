@@ -396,7 +396,7 @@ MonoBehaviour:
     y: 0
   shiftPos: 0
   random:
-    state: 0
+    state: 555
 --- !u!114 &1487577308
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -56,13 +56,11 @@ public class RenderSystem : SystemBase
             matrices = new NativeList<Matrix4x4>(Allocator.Temp);
             for (int i = 0; i < board.Length; i++)
             {
-                bool isItPlayerMino = false;
-                for (int j = 0; j < piece.Length; j++)
-                {
-                    isItPlayerMino = math.all(new int2(i%10, i/10) == piece[j].value);
-                    if (isItPlayerMino) break;
-                }
-                if(board[i].value < 128 || isItPlayerMino)matrices.Add(Matrix4x4.Translate(transform.Value + new float3(i%10, math.floor(i/10), 0f)));
+                if(board[i].value < 128)matrices.Add(Matrix4x4.Translate(transform.Value + new float3(i%10, math.floor(i/10), 0f)));
+            }
+            for (int i = 0; i < piece.Length; i++)
+            {
+                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(piece[i].value.x, piece[i].value.y, 0f)));
             }
             Graphics.DrawMeshInstanced(cubeMesh, 0, material, matrices.ToArray());
             matrices.Dispose();

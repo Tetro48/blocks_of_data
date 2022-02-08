@@ -93,7 +93,7 @@ public class PlayerSystem : SystemBase
                     player.fallenTiles--;
                 }
             }
-            movePiece(board, ref piece, new int2(0,-tilesCounted));
+            if (tilesCounted > 0) movePiece(board, ref piece, new int2(0,-tilesCounted));
             if (player.touchedGround) player.LockTicks += deltaTime;
             if (player.LockTicks > player.LockDelay && player.pieceSpawned)
             {
