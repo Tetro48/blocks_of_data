@@ -52,15 +52,15 @@ public class RenderSystem : SystemBase
     protected override void OnUpdate()
     {
         // if(isRendererOn)
-        Entities.ForEach((in DynamicBuffer<PlayerBoard> board, in DynamicBuffer<PlayerPiece> piece, in Translation transform) => {
+        Entities.ForEach((ref PlayerComponent player, in DynamicBuffer<PlayerBoard> board, in Translation transform) => {
             matrices = new NativeList<Matrix4x4>(Allocator.Temp);
             for (int i = 0; i < board.Length; i++)
             {
                 if(board[i].value < 128)matrices.Add(Matrix4x4.Translate(transform.Value + new float3(i%10, math.floor(i/10), 0f)));
             }
-            for (int i = 0; i < piece.Length; i++)
+            for (int i = 0; i < player.minos; i++)
             {
-                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(piece[i].value.x, piece[i].value.y, 0f)));
+                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(player.piecePos + StaticPiecePositions.pieceCollision[player.minoIndex+i], 0f)));
             }
             Graphics.DrawMeshInstanced(cubeMesh, 0, material, matrices.ToArray());
             matrices.Dispose();

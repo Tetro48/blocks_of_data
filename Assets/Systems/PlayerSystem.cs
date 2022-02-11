@@ -9,28 +9,38 @@ public class PlayerSystem : SystemBase
 {
     private Inputs inputs;
     private float2 previousMovement;
+    private BlobAssetStore blobAssetStore;
+    private BlobAssetReference<PieceBlob> pieceCollisionReference, pieceOffsetReference;
     
     protected override void OnCreate()
     {
         inputs = new Inputs();
         inputs.Main.Enable();
+        using BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
+        ref var pieceCollisionBlobAsset = ref blobBuilder.ConstructRoot<PieceBlob>();
+        var pieceCollisionsArray = blobBuilder.Allocate(ref pieceCollisionBlobAsset.array, 112);
+        for (int i = 0; i < 112; i++)
+        {
+            pieceCollisionsArray[i] = StaticPiecePositions.pieceCollision[i];
+        }
+        pieceCollisionReference = blobBuilder.CreateBlobAssetReference<PieceBlob>(Allocator.Persistent);
     }
     protected override void OnUpdate()
     {
         float deltaTime = Time.DeltaTime;
         float2 movement = inputs.Main.Movement.ReadValue<UnityEngine.Vector2>();
         float2 prevMovement = previousMovement;
-        Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece) => 
+        Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board) => 
         {
             if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
-                // UnityEngine.Debug.Log("Spawned!");
-                // piece = spawnPiece(player.random.NextInt(0,6));
-                movePiece(board, ref piece, new int2(4, 21));
+                UnityEngine.Debug.Log("Spawned!");
+                player.minoIndex = 4 * player.random.NextInt(0,6);
+                movePiece(board, in pieceCollisionReference, ref player, new int2(4, 21));
                 player.spawnTicks = 0f;
                 player.LockTicks = 0f;
                 player.pieceSpawned = true;
-                throw new System.NotImplementedException("This spawning mechanic is not implemented!");
+                // throw new System.NotImplementedException("This spawning mechanic is not implemented!");
             }
             if (!player.pieceSpawned)
             {
@@ -74,7 +84,7 @@ public class PlayerSystem : SystemBase
                 player.shiftPos -= math.ceil(player.shiftPos);
             }
             if(math.any(player.posToMove != int2.zero))
-            if(movePiece(board, ref piece, player.posToMove))
+            if(movePiece(board, in pieceCollisionReference, ref player, player.posToMove))
             {
                 player.LockTicks = 0f;
                 // if(player.posToMove.y == 0)player.touchedGround = false;
@@ -83,7 +93,7 @@ public class PlayerSystem : SystemBase
             int tilesCounted = 0;
             while (player.fallenTiles > 1)
             {
-                if (!checkMovement(board, piece, new int2(0,-1 -tilesCounted)))
+                if (!checkMovement(board, in pieceCollisionReference, player.minoIndex, player.minoIndex, new int2(0,-1 -tilesCounted)))
                 {
                     player.fallenTiles = 0;
                     player.touchedGround = true;
@@ -94,11 +104,11 @@ public class PlayerSystem : SystemBase
                     player.fallenTiles--;
                 }
             }
-            if (tilesCounted > 0) movePiece(board, ref piece, new int2(0,-tilesCounted));
+            if (tilesCounted > 0) movePiece(board, in pieceCollisionReference, ref player, new int2(0,-tilesCounted));
             if (player.touchedGround) player.LockTicks += deltaTime;
             if (player.LockTicks > player.LockDelay && player.pieceSpawned)
             {
-                lockPiece(ref board, ref piece, player.textureID, ref player.lines);
+                lockPiece(ref board, ref player, in pieceCollisionReference);
                 player.LockTicks = 0f;
                 player.pieceSpawned = false;
             }
@@ -112,21 +122,19 @@ public class PlayerSystem : SystemBase
         return board[pos.x + (pos.y * 10)].value < 128;
     }
 
-    private static bool movePiece(in DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece, int2 pos)
+    private static bool movePiece(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> array, ref PlayerComponent player, int2 pos)
     {
-        if (checkMovement(board, piece, pos))
-        for (int i = 0; i < piece.Length; i++)
-        {
-            piece[i] += pos;
-        }
+        if (checkMovement(board, array, player.minoIndex, player.minos, pos))
+        player.piecePos += pos;
+        else return false;
         return true;
     }
 
-    private static bool checkMovement(in DynamicBuffer<PlayerBoard> board, in DynamicBuffer<PlayerPiece> piece, in int2 pos)
+    private static bool checkMovement(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> blob, in int minoIndex, in int minos, in int2 pos)
     {
         //works just fine without {}
-        for (int i = 0; i < piece.Length; i++)
-        if (CheckCollision(board, piece[i].value + pos)) return false;
+        for (int i = 0; i < minos; i++)
+        if (CheckCollision(board, blob.Value.array[minoIndex + i] + pos)) return false;
         return true;
     }
 
@@ -165,16 +173,16 @@ public class PlayerSystem : SystemBase
         isLineFull.Dispose();
     }
 
-    private static void lockPiece(ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerPiece> piece, in byte textureID, ref int lineCount)
+    private static void lockPiece(ref DynamicBuffer<PlayerBoard> board, ref PlayerComponent player, in BlobAssetReference<PieceBlob> blob)
     {
-        for (int i = 0; i < piece.Length; i++)
+        for (int i = 0; i < player.minos; i++)
         {
-            int2 coord = piece[i].value;
+            int2 coord = blob.Value.array[player.minoIndex + i];
             PlayerBoard modBoard = new PlayerBoard();
-            modBoard.value = textureID;
+            modBoard.value = player.textureID;
             board[coord.x + (coord.y * 10)] = modBoard;
         }
-        checkAndClearLines(ref board, ref lineCount);
+        checkAndClearLines(ref board, ref player.lines);
     }
 
 }
