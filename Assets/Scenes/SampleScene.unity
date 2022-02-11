@@ -362,10 +362,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textureID: 0
+  rotationIndex: 0
   lines: 0
-  pieceID: 0
+  minoIndex: 0
+  minos: 0
   isControllable: 0
-  pieceSpawned: 0
+  pieceSpawned: 1
   touchedGround: 0
   LockDelay: 1
   LockTicks: 0

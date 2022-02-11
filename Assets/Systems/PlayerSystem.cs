@@ -28,6 +28,7 @@ public class PlayerSystem : SystemBase
                 // piece = spawnPiece(player.random.NextInt(0,6));
                 movePiece(board, ref piece, new int2(4, 21));
                 player.spawnTicks = 0f;
+                player.LockTicks = 0f;
                 player.pieceSpawned = true;
                 throw new System.NotImplementedException("This spawning mechanic is not implemented!");
             }
@@ -54,11 +55,11 @@ public class PlayerSystem : SystemBase
                 player.shiftPos = 0f;
             }
             
-            if (player.autoShiftTicks < -player.delayedAutoShift || math.any(prevMovement != movement))
+            if (player.autoShiftTicks < -player.delayedAutoShift || (prevMovement.x > -0.3f && prevMovement.x < 0f))
             {
                 player.shiftPos -= deltaTime * 60;
             }
-            if (player.autoShiftTicks >= player.delayedAutoShift || math.any(prevMovement != movement))
+            if (player.autoShiftTicks >= player.delayedAutoShift || (prevMovement.x < 0.3f && prevMovement.x > 0f))
             {
                 player.shiftPos += deltaTime * 60;
             }

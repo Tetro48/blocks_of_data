@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 
+//this information is all there to just create a single cube. except for the atlas.
 public static class VoxelData
 {
     public static readonly int2 textureAtlasSize = new int2(4,10);
