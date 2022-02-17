@@ -30,13 +30,14 @@ public class PlayerSystem : SystemBase
         float deltaTime = Time.DeltaTime;
         float2 movement = inputs.Main.Movement.ReadValue<UnityEngine.Vector2>();
         float2 prevMovement = previousMovement;
+        BlobAssetReference<PieceBlob> collisionRef = pieceCollisionReference;
         Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board) => 
         {
             if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
-                UnityEngine.Debug.Log("Spawned!");
+                // UnityEngine.Debug.Log("Spawned!");
                 player.minoIndex = 4 * player.random.NextInt(0,6);
-                movePiece(board, in pieceCollisionReference, ref player, new int2(4, 21));
+                player.piecePos = new int2(4,21);
                 player.spawnTicks = 0f;
                 player.LockTicks = 0f;
                 player.pieceSpawned = true;
@@ -84,16 +85,16 @@ public class PlayerSystem : SystemBase
                 player.shiftPos -= math.ceil(player.shiftPos);
             }
             if(math.any(player.posToMove != int2.zero))
-            if(movePiece(board, in pieceCollisionReference, ref player, player.posToMove))
+            if(movePiece(board, in collisionRef, ref player, player.posToMove))
             {
                 player.LockTicks = 0f;
-                // if(player.posToMove.y == 0)player.touchedGround = false;
+                if(checkMovement(board, collisionRef, player.minoIndex, player.minos, player.piecePos))player.touchedGround = false;
             }
             player.posToMove = int2.zero;
             int tilesCounted = 0;
             while (player.fallenTiles > 1)
             {
-                if (!checkMovement(board, in pieceCollisionReference, player.minoIndex, player.minoIndex, new int2(0,-1 -tilesCounted)))
+                if (!checkMovement(board, in collisionRef, player.minoIndex, player.minoIndex, new int2(0,-1 -tilesCounted)))
                 {
                     player.fallenTiles = 0;
                     player.touchedGround = true;
@@ -104,11 +105,11 @@ public class PlayerSystem : SystemBase
                     player.fallenTiles--;
                 }
             }
-            if (tilesCounted > 0) movePiece(board, in pieceCollisionReference, ref player, new int2(0,-tilesCounted));
+            if (tilesCounted > 0) movePiece(board, in collisionRef, ref player, new int2(0,-tilesCounted));
             if (player.touchedGround) player.LockTicks += deltaTime;
             if (player.LockTicks > player.LockDelay && player.pieceSpawned)
             {
-                lockPiece(ref board, ref player, in pieceCollisionReference);
+                lockPiece(ref board, ref player, in collisionRef);
                 player.LockTicks = 0f;
                 player.pieceSpawned = false;
             }
@@ -124,8 +125,7 @@ public class PlayerSystem : SystemBase
 
     private static bool movePiece(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> array, ref PlayerComponent player, int2 pos)
     {
-        if (checkMovement(board, array, player.minoIndex, player.minos, pos))
-        player.piecePos += pos;
+        if (checkMovement(board, array, player.minoIndex, player.minos, player.piecePos + pos)) player.piecePos += pos;
         else return false;
         return true;
     }
@@ -141,8 +141,8 @@ public class PlayerSystem : SystemBase
     private static void checkAndClearLines(ref DynamicBuffer<PlayerBoard> board, ref int lineCount)
     {
         NativeArray<bool> isLineFull = new NativeArray<bool>(40, Allocator.Temp);
-        PlayerBoard modBoard = new PlayerBoard();
-        for (int y = 0; y < board.Length / 10; y++)
+        //reversed for loop because, why not?
+        for (int y = board.Length / 10 - 1; y >= 0; y--)
         {
             isLineFull[y] = true;
             for (int i = 0; i < 10; i++)
@@ -162,8 +162,7 @@ public class PlayerSystem : SystemBase
             lineCount++;
             for (int i = 0; i < 10; i++)
             {
-                modBoard.value = 128;
-                board[count - i] = modBoard;
+                board[count - i] = new PlayerBoard(128);
             }
             for (int i = y * 10; i < count - 1; i++)
             {
@@ -177,10 +176,8 @@ public class PlayerSystem : SystemBase
     {
         for (int i = 0; i < player.minos; i++)
         {
-            int2 coord = blob.Value.array[player.minoIndex + i];
-            PlayerBoard modBoard = new PlayerBoard();
-            modBoard.value = player.textureID;
-            board[coord.x + (coord.y * 10)] = modBoard;
+            int2 coord = blob.Value.array[player.minoIndex + i] + player.piecePos;
+            board[coord.x + (coord.y * 10)] = new PlayerBoard(player.textureID);
         }
         checkAndClearLines(ref board, ref player.lines);
     }
