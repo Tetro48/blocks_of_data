@@ -85,10 +85,9 @@ public class PlayerSystem : SystemBase
                 player.shiftPos -= math.ceil(player.shiftPos);
             }
             if(math.any(player.posToMove != int2.zero))
-            if(movePiece(board, in collisionRef, ref player, player.posToMove))
+            if(horizontalMovePiece(board, in collisionRef, ref player))
             {
                 player.LockTicks = 0f;
-                if(checkMovement(board, collisionRef, player.minoIndex, player.minos, player.piecePos))player.touchedGround = false;
             }
             player.posToMove = int2.zero;
             int tilesCounted = 0;
@@ -118,15 +117,33 @@ public class PlayerSystem : SystemBase
     }
     private static bool CheckCollision(DynamicBuffer<PlayerBoard> board, in int2 pos)
     {
-        if (pos.x > 9 || pos.x < 0) return true;
-        if (pos.x + (pos.y * 10) < 0 || pos.x + (pos.y * 10) >= 400) return true;
-        return board[pos.x + (pos.y * 10)].value < 128;
+        if (pos.x < 0 || pos.x > 9) return true;
+        if (pos.y < 0 || pos.y > 39) return true;
+        return board[pos.y * 10 + pos.x].value < 128;
+    }
+    private static bool horizontalMovePiece(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> array, ref PlayerComponent player)
+    {
+        int tilesCounted = 0;
+        while (player.posToMove.x > 1 || player.posToMove.x < -1)
+        {
+            if (!checkMovement(board, in array, player.minoIndex, player.minoIndex, new int2(0,-1 -tilesCounted)))
+            {
+                player.posToMove.x = 0;
+                player.touchedGround = false;
+            }
+            else
+            {
+                tilesCounted += player.posToMove.x > 0 ? 1 : -1;
+                player.posToMove += player.posToMove.x > 0 ? -1 : 1;
+            }
+        }
+        return movePiece(board, array, ref player, new int2(tilesCounted, 0));
     }
 
     private static bool movePiece(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> array, ref PlayerComponent player, int2 pos)
     {
         if (checkMovement(board, array, player.minoIndex, player.minos, player.piecePos + pos)) player.piecePos += pos;
-        else return false;
+        else {UnityEngine.Debug.Log("Piece collision at "+ (player.piecePos+pos)); return false;}
         return true;
     }
 

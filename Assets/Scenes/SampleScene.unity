@@ -264,7 +264,7 @@ MonoBehaviour:
   random:
     state: 109485
   isRandom: 0
-  playerCount: 300
+  playerCount: 25000
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
