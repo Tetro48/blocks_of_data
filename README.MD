@@ -1,6 +1,6 @@
 # Blocks of Data
 
-An opensource in-development entity-based internal block-stacking engine. It's focus is on high performance and low amount of memory allocated per player.
+An opensource in-development entity-based internal block-stacking engine. Its focus is on high performance and low amount of memory allocated per player.
 
 # Notice
 
