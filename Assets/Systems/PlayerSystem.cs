@@ -132,7 +132,7 @@ public class PlayerSystem : SystemBase
     {
         if (pos.x < 0 || pos.x > 9) return true;
         if (pos.y < 0 || pos.y > 39) return true;
-        return board[pos.y * 10 + pos.x].value < 128;
+        return board[pos.y * 10 + pos.x] < 128;
     }
     private static bool horizontalMovePiece(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> array, ref PlayerComponent player)
     {
@@ -173,6 +173,7 @@ public class PlayerSystem : SystemBase
         return true;
     }
 
+    //Notice: Line dropping is instant. The original owner is quite concerned with memory use on this ECS project.
     private static void checkAndClearLines(ref DynamicBuffer<PlayerBoard> board, ref int lineCount)
     {
         NativeArray<bool> isLineFull = new NativeArray<bool>(40, Allocator.Temp);
@@ -180,9 +181,10 @@ public class PlayerSystem : SystemBase
         for (int y = board.Length / 10 - 1; y >= 0; y--)
         {
             isLineFull[y] = true;
+            //Checking if a single mino is empty on a line.
             for (int i = 0; i < 10; i++)
             {
-                if (board[i + (y * 10)].value < 128)
+                if (board[i + (y * 10)] < 128)
                 {
                     continue;
                 }
@@ -193,17 +195,19 @@ public class PlayerSystem : SystemBase
             {
                 continue;
             }
-            int count = board.Length;
             lineCount++;
+            //Line clearing
             for (int i = 0; i < 10; i++)
             {
-                board[count - i] = 128;
+                board[y * 10 + i] = 128;
             }
-            for (int i = y * 10; i < count - 1; i++)
+            //Matrix drop
+            for (int i = y * 10; i < board.Length - 1; i++)
             {
                 board[i] = board[i + 10];
             }
         }
+        //This had to be used to avoid 40-50 bytes worth of memory leak.
         isLineFull.Dispose();
     }
 

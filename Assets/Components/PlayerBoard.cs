@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 [Serializable, InternalBufferCapacity(400), GenerateAuthoringComponent]
+//this name is somewhat confusing.
 public struct PlayerBoard : IBufferElementData
 {
     public byte value;
