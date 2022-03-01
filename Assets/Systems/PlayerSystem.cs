@@ -39,7 +39,7 @@ public class PlayerSystem : SystemBase
                 player.minoIndex = 4 * player.random.NextInt(0,6);
                 player.piecePos = new int2(4,21);
                 player.spawnTicks = 0f;
-                player.LockTicks = 0f;
+                player.lockTicks = 0f;
                 player.pieceSpawned = true;
                 // throw new System.NotImplementedException("This spawning mechanic is not implemented!");
             }
@@ -56,7 +56,7 @@ public class PlayerSystem : SystemBase
             if (movement.y > 0.5f) 
             {
                 player.fallenTiles = 999;
-                player.LockTicks = player.LockDelay;
+                player.lockTicks = player.lockDelay;
             }
             if (movement.x > 0.3f) player.autoShiftTicks += deltaTime * player.autoShiftRate;
             if (movement.x < -0.3f) player.autoShiftTicks -= deltaTime * player.autoShiftRate;
@@ -87,7 +87,7 @@ public class PlayerSystem : SystemBase
             if(math.any(player.posToMove != int2.zero))
             if(horizontalMovePiece(board, in collisionRef, ref player))
             {
-                player.LockTicks = 0f;
+                player.lockTicks = 0f;
             }
             player.posToMove = int2.zero;
             int tilesCounted = 0;
@@ -105,11 +105,11 @@ public class PlayerSystem : SystemBase
                 }
             }
             if (tilesCounted > 0) movePiece(board, in collisionRef, ref player, new int2(0,-tilesCounted));
-            if (player.touchedGround) player.LockTicks += deltaTime;
-            if (player.LockTicks > player.LockDelay && player.pieceSpawned)
+            if (player.touchedGround) player.lockTicks += deltaTime;
+            if (player.lockTicks > player.lockDelay && player.pieceSpawned)
             {
                 lockPiece(ref board, ref player, in collisionRef);
-                player.LockTicks = 0f;
+                player.lockTicks = 0f;
                 player.pieceSpawned = false;
             }
         }).WithoutBurst().Run();

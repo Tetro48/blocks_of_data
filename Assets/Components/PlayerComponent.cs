@@ -10,7 +10,7 @@ public struct PlayerComponent : IComponentData
     public int lines;
     public int minoIndex, minos;
     public bool isControllable, pieceSpawned, touchedGround;
-    public float LockDelay, LockTicks, delayedAutoShift, autoShiftTicks, autoShiftRate, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
+    public float lockDelay, lockTicks, delayedAutoShift, autoShiftTicks, autoShiftRate, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
     public bool4x2 inputs;
     public int2 piecePos, posToMove;
     public float shiftPos;
