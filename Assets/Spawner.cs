@@ -18,7 +18,7 @@ public class Spawner : MonoBehaviour
         System.Collections.Generic.List<PlayerBoard> board = new System.Collections.Generic.List<PlayerBoard>();
         for (int i = 0; i < 400; i++)
         {
-            board.Add(new PlayerBoard(128));
+            board.Add(128);
         }
         NativeArray<PlayerBoard> nativeBoard = board.ToNativeArray(Allocator.Persistent);
         manager = World.DefaultGameObjectInjectionWorld.EntityManager;

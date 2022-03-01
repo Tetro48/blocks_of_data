@@ -197,7 +197,7 @@ public class PlayerSystem : SystemBase
             lineCount++;
             for (int i = 0; i < 10; i++)
             {
-                board[count - i] = new PlayerBoard(128);
+                board[count - i] = 128;
             }
             for (int i = y * 10; i < count - 1; i++)
             {
@@ -212,7 +212,7 @@ public class PlayerSystem : SystemBase
         for (int i = 0; i < player.minos; i++)
         {
             int2 coord = blob.Value.array[player.minoIndex + i] + player.piecePos;
-            board[coord.x + (coord.y * 10)] = new PlayerBoard(player.textureID);
+            board[coord.x + (coord.y * 10)] = player.textureID;
         }
         checkAndClearLines(ref board, ref player.lines);
     }
