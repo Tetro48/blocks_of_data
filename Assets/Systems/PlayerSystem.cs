@@ -128,6 +128,9 @@ public class PlayerSystem : SystemBase
         }
         return result;
     }
+    /// <summary>
+    /// Checks collisions. Returns true if there's a block in specified position. Otherwise, returns false.
+    /// </summary>
     private static bool CheckCollision(in DynamicBuffer<PlayerBoard> board, in int2 pos)
     {
         if (pos.x < 0 || pos.x > 9) return true;
@@ -139,7 +142,7 @@ public class PlayerSystem : SystemBase
         int tilesCounted = 0;
         while (player.posToMove.x != 0)
         {
-            if (!checkMovement(board, in array, player.minoIndex, player.minoIndex, new int2(0,player.piecePos.x+tilesCounted)))
+            if (!checkMovement(board, in array, player.minoIndex, player.minoIndex, new int2(player.piecePos.x+tilesCounted, 0)))
             {
                 player.posToMove.x = 0;
                 player.touchedGround = false;
@@ -167,13 +170,14 @@ public class PlayerSystem : SystemBase
     private static bool checkMovement(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> blob, in int minoIndex, in int minos, in int2 pos)
     {
         //works just fine without {}
+        //notice: {} is here in this function for... debugging???
         for (int i = 0; i < minos; i++)
         if (CheckCollision(board, blob.Value.array[minoIndex + i] + pos)) {UnityEngine.Debug.Log("returned false"); return false;}
         UnityEngine.Debug.Log("returned true");
         return true;
     }
 
-    //Notice: Line dropping is instant. The original owner is quite concerned with memory use on this ECS project.
+    //Notice: Line dropping is instant. The original creator is quite concerned with memory use on this ECS project.
     private static void checkAndClearLines(ref DynamicBuffer<PlayerBoard> board, ref int lineCount)
     {
         NativeArray<bool> isLineFull = new NativeArray<bool>(40, Allocator.Temp);
