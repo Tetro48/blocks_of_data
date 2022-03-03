@@ -51,8 +51,8 @@ public class RenderSystem : SystemBase
     }
     protected override void OnUpdate()
     {
-        // if(isRendererOn)
-        Entities.ForEach((ref PlayerComponent player, in DynamicBuffer<PlayerBoard> board, in Translation transform) => {
+        if(isRendererOn)
+        Entities.ForEach((in PlayerComponent player, in DynamicBuffer<PlayerBoard> board, in Translation transform) => {
             matrices = new NativeList<Matrix4x4>(Allocator.Temp);
             for (int i = 0; i < board.Length; i++)
             {

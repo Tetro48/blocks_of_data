@@ -41,6 +41,7 @@ public class PlayerSystem : SystemBase
                 player.spawnTicks = 0f;
                 player.lockTicks = 0f;
                 player.pieceSpawned = true;
+                player.touchedGround = false;
                 // throw new System.NotImplementedException("This spawning mechanic is not implemented!");
             }
             if (!player.pieceSpawned)
@@ -93,7 +94,7 @@ public class PlayerSystem : SystemBase
             int tilesCounted = 0;
             while (player.fallenTiles > 1)
             {
-                if (!checkMovement(board, in collisionRef, player.minoIndex, player.minoIndex, new int2(0,player.piecePos.y -1 -tilesCounted)))
+                if (!checkMovement(board, in collisionRef, player.minoIndex, player.minoIndex, new int2(player.piecePos.x,player.piecePos.y -1 -tilesCounted)))
                 {
                     player.fallenTiles = 0;
                     player.touchedGround = true;
@@ -112,7 +113,7 @@ public class PlayerSystem : SystemBase
                 player.lockTicks = 0f;
                 player.pieceSpawned = false;
             }
-        }).WithoutBurst().Run();
+        }).ScheduleParallel();
         previousMovement = movement;
     }
     private static int ArrayFlatIndexing(int[] arraySizes, params int[] indexArray)
@@ -133,8 +134,8 @@ public class PlayerSystem : SystemBase
     /// </summary>
     private static bool CheckCollision(in DynamicBuffer<PlayerBoard> board, in int2 pos)
     {
-        if (pos.x < 0 || pos.x > 9) return true;
-        if (pos.y < 0 || pos.y > 39) return true;
+        if (pos.x < 0 || pos.x > 9 || pos.y < 0 || pos.y > 39) return true;
+        
         return board[pos.y * 10 + pos.x] < 128;
     }
     private static bool horizontalMovePiece(in DynamicBuffer<PlayerBoard> board, in BlobAssetReference<PieceBlob> array, ref PlayerComponent player)
@@ -142,7 +143,7 @@ public class PlayerSystem : SystemBase
         int tilesCounted = 0;
         while (player.posToMove.x != 0)
         {
-            if (!checkMovement(board, in array, player.minoIndex, player.minoIndex, new int2(player.piecePos.x+tilesCounted, 0)))
+            if (!checkMovement(board, in array, player.minoIndex, player.minoIndex, new int2(player.piecePos.x+tilesCounted, player.piecePos.y)))
             {
                 player.posToMove.x = 0;
                 player.touchedGround = false;
@@ -161,7 +162,6 @@ public class PlayerSystem : SystemBase
         if (checkMovement(board, array, player.minoIndex, player.minos, player.piecePos + pos)) player.piecePos += pos;
         else
         {
-            UnityEngine.Debug.Log("Piece collision at "+ player.piecePos + " trying to move by " + pos);
             return false;
         }
         return true;
@@ -172,8 +172,7 @@ public class PlayerSystem : SystemBase
         //works just fine without {}
         //notice: {} is here in this function for... debugging???
         for (int i = 0; i < minos; i++)
-        if (CheckCollision(board, blob.Value.array[minoIndex + i] + pos)) {UnityEngine.Debug.Log("returned false"); return false;}
-        UnityEngine.Debug.Log("returned true");
+        if (CheckCollision(board, blob.Value.array[minoIndex + i] + pos)) return false;
         return true;
     }
 
