@@ -36,14 +36,15 @@ public class PlayerSystem : SystemBase
         float deltaTime = Time.DeltaTime;
         float2 movement = inputs.Main.Movement.ReadValue<UnityEngine.Vector2>();
         float2 prevMovement = previousMovement;
+        //fing 4x2 matrix mapping
         bool4x2 jobBoolInputs = new bool4x2(
             inputs.Main.CWRotation.WasPressedThisFrame(),
-            inputs.Main.CW2Rotation.WasPressedThisFrame(),
-            inputs.Main.CCWRotation.WasPressedThisFrame(),
-            inputs.Main.CCW2Rotation.WasPressedThisFrame(),
             inputs.Main.UDRotation.WasPressedThisFrame(),
+            inputs.Main.CW2Rotation.WasPressedThisFrame(),
             inputs.Main.UD2Rotation.WasPressedThisFrame(),
+            inputs.Main.CCWRotation.WasPressedThisFrame(),
             false,
+            inputs.Main.CCW2Rotation.WasPressedThisFrame(),
             false);
         BlobAssetReference<PieceBlob> collisionRef = pieceCollisionReference, JLSTZoffsets = JLSTZpieceOffsetReference;
         //for easier debugging, use .WithoutBurst().Run(), otherwise, .ScheduleParallel()
