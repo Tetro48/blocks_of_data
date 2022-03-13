@@ -101,9 +101,11 @@ public class PlayerSystem : SystemBase
                 player.inputs = jobBoolInputs;    
             }
 
-            if (player.inputs.c1.z)
+            if (player.inputs.c1.z && !player.isHoldExecuted)
             {
                 int localMinoIndex, localMinos;
+                player.minoIndex -= player.rotationIndex<<2;
+                player.rotationIndex = 0;
                 if (player.holdMinos > 0)
                 {
                     localMinoIndex = player.minoIndex;
