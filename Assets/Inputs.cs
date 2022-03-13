@@ -35,13 +35,67 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CW Rotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""92af4ca1-657d-43d0-a579-73bf843a222b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CCW Rotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""b13fb57b-f39b-4456-b1db-f2633cc588ca"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CW2 Rotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""2499f333-8a1b-4a85-b260-db9d373519e9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CCW2 Rotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""21861c58-96bf-4680-86eb-e28c2cf462c3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UD Rotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""bccbab8c-b079-4fe3-a8be-7302f90758af"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UD2 Rotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""178110f5-3c30-4c77-83fe-4f17401c9e54"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": ""2D Vector"",
                     ""id"": ""6ea52627-e6f4-4677-b6b1-910f30599547"",
-                    ""path"": ""2DVector(mode=2)"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -52,7 +106,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""up"",
                     ""id"": ""b94ba5a8-8730-490c-8b36-b8d66685459e"",
-                    ""path"": ""<Keyboard>/upArrow"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
@@ -96,7 +150,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""2D Vector"",
                     ""id"": ""63bb33ba-0a43-4dd2-93a3-33f49bc40689"",
-                    ""path"": ""2DVector(mode=2)"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -147,6 +201,72 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd85ff01-909e-4be7-a7b0-20b510a21e56"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CW Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7d450917-c444-4cba-a8b1-6c68eadfe016"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CCW Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1dfa3e13-8261-4c25-85a2-791a36b18ae2"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CW2 Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e2dc4438-59b6-44a8-9e38-0919d20b0e2a"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CCW2 Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5e057c59-5d69-4b68-b830-4e1be27f2213"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UD Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""49513ab6-1973-437e-8a8b-218fbc1e0cca"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UD2 Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -179,6 +299,12 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         // Main
         m_Main = asset.FindActionMap("Main", throwIfNotFound: true);
         m_Main_Movement = m_Main.FindAction("Movement", throwIfNotFound: true);
+        m_Main_CWRotation = m_Main.FindAction("CW Rotation", throwIfNotFound: true);
+        m_Main_CCWRotation = m_Main.FindAction("CCW Rotation", throwIfNotFound: true);
+        m_Main_CW2Rotation = m_Main.FindAction("CW2 Rotation", throwIfNotFound: true);
+        m_Main_CCW2Rotation = m_Main.FindAction("CCW2 Rotation", throwIfNotFound: true);
+        m_Main_UDRotation = m_Main.FindAction("UD Rotation", throwIfNotFound: true);
+        m_Main_UD2Rotation = m_Main.FindAction("UD2 Rotation", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -239,11 +365,23 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Main;
     private IMainActions m_MainActionsCallbackInterface;
     private readonly InputAction m_Main_Movement;
+    private readonly InputAction m_Main_CWRotation;
+    private readonly InputAction m_Main_CCWRotation;
+    private readonly InputAction m_Main_CW2Rotation;
+    private readonly InputAction m_Main_CCW2Rotation;
+    private readonly InputAction m_Main_UDRotation;
+    private readonly InputAction m_Main_UD2Rotation;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
         public MainActions(@Inputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Main_Movement;
+        public InputAction @CWRotation => m_Wrapper.m_Main_CWRotation;
+        public InputAction @CCWRotation => m_Wrapper.m_Main_CCWRotation;
+        public InputAction @CW2Rotation => m_Wrapper.m_Main_CW2Rotation;
+        public InputAction @CCW2Rotation => m_Wrapper.m_Main_CCW2Rotation;
+        public InputAction @UDRotation => m_Wrapper.m_Main_UDRotation;
+        public InputAction @UD2Rotation => m_Wrapper.m_Main_UD2Rotation;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +394,24 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_MainActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnMovement;
+                @CWRotation.started -= m_Wrapper.m_MainActionsCallbackInterface.OnCWRotation;
+                @CWRotation.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnCWRotation;
+                @CWRotation.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnCWRotation;
+                @CCWRotation.started -= m_Wrapper.m_MainActionsCallbackInterface.OnCCWRotation;
+                @CCWRotation.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnCCWRotation;
+                @CCWRotation.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnCCWRotation;
+                @CW2Rotation.started -= m_Wrapper.m_MainActionsCallbackInterface.OnCW2Rotation;
+                @CW2Rotation.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnCW2Rotation;
+                @CW2Rotation.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnCW2Rotation;
+                @CCW2Rotation.started -= m_Wrapper.m_MainActionsCallbackInterface.OnCCW2Rotation;
+                @CCW2Rotation.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnCCW2Rotation;
+                @CCW2Rotation.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnCCW2Rotation;
+                @UDRotation.started -= m_Wrapper.m_MainActionsCallbackInterface.OnUDRotation;
+                @UDRotation.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnUDRotation;
+                @UDRotation.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnUDRotation;
+                @UD2Rotation.started -= m_Wrapper.m_MainActionsCallbackInterface.OnUD2Rotation;
+                @UD2Rotation.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnUD2Rotation;
+                @UD2Rotation.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnUD2Rotation;
             }
             m_Wrapper.m_MainActionsCallbackInterface = instance;
             if (instance != null)
@@ -263,6 +419,24 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @CWRotation.started += instance.OnCWRotation;
+                @CWRotation.performed += instance.OnCWRotation;
+                @CWRotation.canceled += instance.OnCWRotation;
+                @CCWRotation.started += instance.OnCCWRotation;
+                @CCWRotation.performed += instance.OnCCWRotation;
+                @CCWRotation.canceled += instance.OnCCWRotation;
+                @CW2Rotation.started += instance.OnCW2Rotation;
+                @CW2Rotation.performed += instance.OnCW2Rotation;
+                @CW2Rotation.canceled += instance.OnCW2Rotation;
+                @CCW2Rotation.started += instance.OnCCW2Rotation;
+                @CCW2Rotation.performed += instance.OnCCW2Rotation;
+                @CCW2Rotation.canceled += instance.OnCCW2Rotation;
+                @UDRotation.started += instance.OnUDRotation;
+                @UDRotation.performed += instance.OnUDRotation;
+                @UDRotation.canceled += instance.OnUDRotation;
+                @UD2Rotation.started += instance.OnUD2Rotation;
+                @UD2Rotation.performed += instance.OnUD2Rotation;
+                @UD2Rotation.canceled += instance.OnUD2Rotation;
             }
         }
     }
@@ -288,5 +462,11 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
     public interface IMainActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnCWRotation(InputAction.CallbackContext context);
+        void OnCCWRotation(InputAction.CallbackContext context);
+        void OnCW2Rotation(InputAction.CallbackContext context);
+        void OnCCW2Rotation(InputAction.CallbackContext context);
+        void OnUDRotation(InputAction.CallbackContext context);
+        void OnUD2Rotation(InputAction.CallbackContext context);
     }
 }

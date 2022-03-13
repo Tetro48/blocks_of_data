@@ -12,6 +12,7 @@ public struct PlayerComponent : IComponentData
     public float lockDelay, lockTicks, delayedAutoShift, autoShiftTicks, autoShiftRate, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
     public bool4x2 inputs;
     public int2 piecePos, posToMove;
+    public float2 movement, prevMovement;
     public float shiftPos;
     public Unity.Mathematics.Random random;
 }

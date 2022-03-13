@@ -411,18 +411,18 @@ MonoBehaviour:
   textureID: 0
   rotationIndex: 0
   lines: 0
-  minoIndex: 8
+  minoIndex: 0
   minos: 4
-  isControllable: 0
+  isControllable: 1
   pieceSpawned: 1
   touchedGround: 0
-  LockDelay: 10
-  LockTicks: 0
-  delayedAutoShift: 0.5
+  lockDelay: 0
+  lockTicks: 0
+  delayedAutoShift: 0.25
   autoShiftTicks: 0
-  autoShiftRate: 6
+  autoShiftRate: 0.25
   softDropMultiplier: 40
-  spawnDelay: 1
+  spawnDelay: 0.25
   spawnTicks: 0
   lineSpawnDelay: 0
   lineDropDelay: 0
@@ -446,9 +446,15 @@ MonoBehaviour:
   posToMove:
     x: 0
     y: 0
+  movement:
+    x: 0
+    y: 0
+  prevMovement:
+    x: 0
+    y: 0
   shiftPos: 0
   random:
-    state: 555
+    state: 43045102
 --- !u!114 &1487577309
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,13 +13,67 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "CW Rotation",
+                    "type": "Button",
+                    "id": "92af4ca1-657d-43d0-a579-73bf843a222b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CCW Rotation",
+                    "type": "Button",
+                    "id": "b13fb57b-f39b-4456-b1db-f2633cc588ca",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CW2 Rotation",
+                    "type": "Button",
+                    "id": "2499f333-8a1b-4a85-b260-db9d373519e9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CCW2 Rotation",
+                    "type": "Button",
+                    "id": "21861c58-96bf-4680-86eb-e28c2cf462c3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UD Rotation",
+                    "type": "Button",
+                    "id": "bccbab8c-b079-4fe3-a8be-7302f90758af",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UD2 Rotation",
+                    "type": "Button",
+                    "id": "178110f5-3c30-4c77-83fe-4f17401c9e54",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "2D Vector",
                     "id": "6ea52627-e6f4-4677-b6b1-910f30599547",
-                    "path": "2DVector(mode=2)",
+                    "path": "2DVector(mode=1)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -30,7 +84,7 @@
                 {
                     "name": "up",
                     "id": "b94ba5a8-8730-490c-8b36-b8d66685459e",
-                    "path": "<Keyboard>/upArrow",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
@@ -74,7 +128,7 @@
                 {
                     "name": "2D Vector",
                     "id": "63bb33ba-0a43-4dd2-93a3-33f49bc40689",
-                    "path": "2DVector(mode=2)",
+                    "path": "2DVector(mode=1)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -125,6 +179,72 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "bd85ff01-909e-4be7-a7b0-20b510a21e56",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CW Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d450917-c444-4cba-a8b1-6c68eadfe016",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CCW Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1dfa3e13-8261-4c25-85a2-791a36b18ae2",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CW2 Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e2dc4438-59b6-44a8-9e38-0919d20b0e2a",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CCW2 Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5e057c59-5d69-4b68-b830-4e1be27f2213",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UD Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "49513ab6-1973-437e-8a8b-218fbc1e0cca",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UD2 Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

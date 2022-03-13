@@ -10,34 +10,57 @@ public class PlayerSystem : SystemBase
     private Inputs inputs;
     private float2 previousMovement;
     private BlobAssetStore blobAssetStore;
-    private BlobAssetReference<PieceBlob> pieceCollisionReference, pieceOffsetReference;
+    private BlobAssetReference<PieceBlob> pieceCollisionReference, JLSTZpieceOffsetReference;
     
     protected override void OnCreate()
     {
         inputs = new Inputs();
         inputs.Main.Enable();
+        pieceCollisionReference = CreatePieceBlobAsset(StaticPiecePositions.pieceCollision);
+        JLSTZpieceOffsetReference = CreatePieceBlobAsset(StaticPiecePositions.JLSTZpieceRotationOffset);
+    }
+    //friendly reminder that we're going to create immutable data of int2s.
+    private static BlobAssetReference<PieceBlob> CreatePieceBlobAsset(NativeList<int2> array)
+    {
         using BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
-        ref var pieceCollisionBlobAsset = ref blobBuilder.ConstructRoot<PieceBlob>();
-        var pieceCollisionsArray = blobBuilder.Allocate(ref pieceCollisionBlobAsset.array, 112);
-        for (int i = 0; i < 112; i++)
+        ref PieceBlob pieceCollisionBlobAsset = ref blobBuilder.ConstructRoot<PieceBlob>();
+        var blobArray = blobBuilder.Allocate(ref pieceCollisionBlobAsset.array, array.Length);
+        for (int i = 0; i < array.Length; i++)
         {
-            pieceCollisionsArray[i] = StaticPiecePositions.pieceCollision[i];
+            blobArray[i] = array[i];
         }
-        pieceCollisionReference = blobBuilder.CreateBlobAssetReference<PieceBlob>(Allocator.Persistent);
+        return blobBuilder.CreateBlobAssetReference<PieceBlob>(Allocator.Persistent);
     }
     protected override void OnUpdate()
     {
         float deltaTime = Time.DeltaTime;
         float2 movement = inputs.Main.Movement.ReadValue<UnityEngine.Vector2>();
         float2 prevMovement = previousMovement;
+        bool4x2 jobBoolInputs = new bool4x2(
+            inputs.Main.CWRotation.WasPressedThisFrame(),
+            inputs.Main.CW2Rotation.WasPressedThisFrame(),
+            inputs.Main.CCWRotation.WasPressedThisFrame(),
+            inputs.Main.CCW2Rotation.WasPressedThisFrame(),
+            inputs.Main.UDRotation.WasPressedThisFrame(),
+            inputs.Main.UD2Rotation.WasPressedThisFrame(),
+            false,
+            false);
         BlobAssetReference<PieceBlob> collisionRef = pieceCollisionReference;
-        Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board) => 
+        //for easier debugging, use .WithoutBurst().Run(), otherwise, .ScheduleParallel()
+        Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board) =>
         {
             if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
                 UnityEngine.Debug.Log("Spawned!");
-                player.minoIndex = 4 * player.random.NextInt(0,6);
-                player.piecePos = new int2(4,21);
+                uint uint1 = player.random.NextUInt(6);
+                UnityEngine.Debug.Log("uint1:"+uint1);
+                byte convertedInt = (byte)uint1;
+                UnityEngine.Debug.Log("textureid:"+convertedInt+". index:"+(convertedInt<<4));
+                player.textureID = convertedInt;
+                //bitwise left shifting?
+                player.minoIndex = player.textureID << 4;
+                player.rotationIndex = 0;
+                player.piecePos = new int2(4, 21);
                 player.spawnTicks = 0f;
                 player.lockTicks = 0f;
                 player.pieceSpawned = true;
@@ -50,30 +73,43 @@ public class PlayerSystem : SystemBase
                 return;
             }
             player.fallenTiles += player.gravity * deltaTime;
-            if (movement.y < -0.5f)
+            if(player.isControllable)
             {
-                player.fallenTiles += player.gravity * deltaTime * player.softDropMultiplier; 
+                player.movement = movement;
+                player.inputs = jobBoolInputs;    
             }
-            if (movement.y > 0.5f) 
+                
+            #region Piece Movement
+                
+            if (player.movement.y < -0.5f)
+            {
+                player.fallenTiles += player.gravity * deltaTime * player.softDropMultiplier;
+            }
+            if (player.movement.y > 0.5f)
             {
                 player.fallenTiles = 999;
                 player.lockTicks = player.lockDelay;
             }
-            if (movement.x > 0.3f) player.autoShiftTicks += deltaTime * player.autoShiftRate;
-            if (movement.x < -0.3f) player.autoShiftTicks -= deltaTime * player.autoShiftRate;
-            if (movement.x < 0.3f && movement.x > -0.3f && player.autoShiftTicks != 0f) 
+            if (player.autoShiftTicks == 0f && player.movement.x != 0)
+            {
+                UnityEngine.Debug.Log("Moved!");
+                movePiece(board, collisionRef, ref player, new int2(player.movement.x > 0f ? 1 : -1, 0));
+            }
+            if (player.movement.x > 0.3f) player.autoShiftTicks += deltaTime;
+            if (player.movement.x < -0.3f) player.autoShiftTicks -= deltaTime;
+            if (player.movement.x < 0.3f && player.movement.x > -0.3f && player.autoShiftTicks != 0f)
             {
                 player.autoShiftTicks = 0f;
                 player.shiftPos = 0f;
             }
-            
-            if (player.autoShiftTicks < -player.delayedAutoShift || (prevMovement.x > -0.3f && prevMovement.x < 0f))
+
+            if (player.autoShiftTicks < -player.delayedAutoShift)
             {
-                player.shiftPos -= deltaTime * 60;
+                player.shiftPos -= deltaTime * 60 * player.autoShiftRate;
             }
-            if (player.autoShiftTicks >= player.delayedAutoShift || (prevMovement.x < 0.3f && prevMovement.x > 0f))
+            if (player.autoShiftTicks >= player.delayedAutoShift)
             {
-                player.shiftPos += deltaTime * 60;
+                player.shiftPos += deltaTime * 60 * player.autoShiftRate;
             }
             if (player.shiftPos > 1f)
             {
@@ -85,16 +121,34 @@ public class PlayerSystem : SystemBase
                 player.posToMove.x += (int)(math.ceil(player.shiftPos));
                 player.shiftPos -= math.ceil(player.shiftPos);
             }
-            if(math.any(player.posToMove != int2.zero))
-            if(horizontalMovePiece(board, in collisionRef, ref player))
+            if (math.any(player.posToMove != int2.zero))
+            if (horizontalMovePiece(board, in collisionRef, ref player))
             {
                 player.lockTicks = 0f;
             }
+            #endregion
+            
+            #region Piece Rotation
+            if (player.inputs.c0.x | player.inputs.c0.y)
+            {
+                RotatePiece(ref player, 1);
+            }
+            if (player.inputs.c0.z | player.inputs.c0.w)
+            {
+                RotatePiece(ref player, -1);
+            }
+            if (player.inputs.c1.x | player.inputs.c1.y)
+            {
+                RotatePiece(ref player, 2);
+            }
+            #endregion
+            
+            #region Piece Gravity
             player.posToMove = int2.zero;
             int tilesCounted = 0;
             while (player.fallenTiles > 1)
             {
-                if (!checkMovement(board, in collisionRef, player.minoIndex, player.minoIndex, new int2(player.piecePos.x,player.piecePos.y -1 -tilesCounted)))
+                if (!checkMovement(board, in collisionRef, player.minoIndex, player.minos, new int2(player.piecePos.x, player.piecePos.y - 1 - tilesCounted)))
                 {
                     player.fallenTiles = 0;
                     player.touchedGround = true;
@@ -105,7 +159,7 @@ public class PlayerSystem : SystemBase
                     player.fallenTiles--;
                 }
             }
-            if (tilesCounted > 0) movePiece(board, in collisionRef, ref player, new int2(0,-tilesCounted));
+            if (tilesCounted > 0) movePiece(board, in collisionRef, ref player, new int2(0, -tilesCounted));
             if (player.touchedGround) player.lockTicks += deltaTime;
             if (player.lockTicks > player.lockDelay && player.pieceSpawned)
             {
@@ -113,9 +167,28 @@ public class PlayerSystem : SystemBase
                 player.lockTicks = 0f;
                 player.pieceSpawned = false;
             }
-        }).ScheduleParallel();
+            #endregion
+            player.prevMovement = movement;
+        }).WithoutBurst().Schedule();
         previousMovement = movement;
     }
+
+    private static void RotatePiece(ref PlayerComponent player, in sbyte addRotIndex, in byte maxRotIndex = 4)
+    {
+        byte oldRotIndex = player.rotationIndex;
+        player.rotationIndex += (byte)addRotIndex;
+        if (player.rotationIndex > maxRotIndex - 1)
+        {
+            player.rotationIndex -= maxRotIndex;
+        }
+        if (player.rotationIndex > 0x80)
+        {
+            player.rotationIndex += maxRotIndex;
+        }
+        UnityEngine.Debug.Log("old rot index: " + oldRotIndex + ". new rot index: " + player.rotationIndex);
+        player.minoIndex += (player.rotationIndex - oldRotIndex)<<2;
+    }
+
     private static int ArrayFlatIndexing(int[] arraySizes, params int[] indexArray)
     {
         if (arraySizes.Length +1 != indexArray.Length)
@@ -143,7 +216,7 @@ public class PlayerSystem : SystemBase
         int tilesCounted = 0;
         while (player.posToMove.x != 0)
         {
-            if (!checkMovement(board, in array, player.minoIndex, player.minoIndex, new int2(player.piecePos.x+tilesCounted, player.piecePos.y)))
+            if (!checkMovement(board, in array, player.minoIndex, player.minos, new int2(player.piecePos.x+tilesCounted, player.piecePos.y)))
             {
                 player.posToMove.x = 0;
                 player.touchedGround = false;
@@ -184,10 +257,11 @@ public class PlayerSystem : SystemBase
         for (int y = board.Length / 10 - 1; y >= 0; y--)
         {
             isLineFull[y] = true;
+            int transformedY = y * 10;
             //Checking if a single mino is empty on a line.
             for (int i = 0; i < 10; i++)
             {
-                if (board[i + (y * 10)] < 128)
+                if (board[i + (transformedY)] < 128)
                 {
                     continue;
                 }
@@ -202,12 +276,16 @@ public class PlayerSystem : SystemBase
             //Line clearing
             for (int i = 0; i < 10; i++)
             {
-                board[y * 10 + i] = 128;
+                board[transformedY + i] = 128;
             }
             //Matrix drop
-            for (int i = y * 10; i < board.Length - 1; i++)
+            for (int i = transformedY; i < board.Length - 10; i++)
             {
                 board[i] = board[i + 10];
+            }
+            for (int i = 390; i < 400; i++)
+            {
+                board[i] = 128;
             }
         }
         //This had to be used to avoid 40-50 bytes worth of memory leak.
