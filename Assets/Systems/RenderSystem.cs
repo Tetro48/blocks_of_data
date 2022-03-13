@@ -21,7 +21,7 @@ public class RenderSystem : SystemBase
         verts = new List<Vector3>();
         tris = new List<int>();
         UVs = new List<Vector2>();
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         material.enableInstancing = true;
         int vertexIndex = 0;
         for (int p = 0; p < 6; p++)
@@ -51,7 +51,7 @@ public class RenderSystem : SystemBase
     }
     protected override void OnUpdate()
     {
-        if(isRendererOn)
+        // if(isRendererOn)
         Entities.ForEach((in PlayerComponent player, in DynamicBuffer<PlayerBoard> board, in DynamicBuffer<PlayerBag> bag, in Translation transform) => {
             matrices = new NativeList<Matrix4x4>(Allocator.Temp);
             for (int i = 0; i < board.Length; i++)
