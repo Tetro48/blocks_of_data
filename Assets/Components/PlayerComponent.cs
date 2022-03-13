@@ -8,7 +8,7 @@ public struct PlayerComponent : IComponentData
     public byte textureID;
     public sbyte rotationIndex;
     public int lines;
-    public int minoIndex, minos;
+    public int minoIndex, minos, holdMinoIndex, holdMinos;
     public bool isControllable, pieceSpawned, touchedGround;
     public float lockDelay, lockTicks, delayedAutoShift, autoShiftTicks, autoShiftRate, softDropMultiplier, spawnDelay, spawnTicks, lineSpawnDelay, lineDropDelay, lineDropTicks, gravity, fallenTiles;
     public bool4x2 inputs;

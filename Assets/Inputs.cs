@@ -89,6 +89,15 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Hold"",
+                    ""type"": ""Button"",
+                    ""id"": ""90dc233c-86eb-4260-a7ae-7a31e22299cc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -164,7 +173,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/dpad/up"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -175,7 +184,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/dpad/down"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -186,7 +195,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/dpad/left"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -197,7 +206,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/dpad/right"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -208,7 +217,18 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""CW Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""113885bb-fc55-43c7-9806-e58e4669c8a9"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""CW Rotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -219,7 +239,18 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/z"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""CCW Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a25b0523-2797-46c7-b944-a54635bc8382"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""CCW Rotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -230,7 +261,18 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""CW2 Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d27e1f22-b8c4-48e5-88bb-873628613cec"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""CW2 Rotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -241,7 +283,18 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": """",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""CCW2 Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9480fb1-5a3d-4708-87a2-a1ff46a5b5d1"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""CCW2 Rotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -252,7 +305,18 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""UD Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""29063a68-7f6b-4be0-bab4-ec581f334509"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""UD Rotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -263,8 +327,41 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""path"": """",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard"",
                     ""action"": ""UD2 Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9550bb6-e7db-45c2-9f4e-1de6ebbf0fd5"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""UD2 Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f9206ab1-6265-4fb2-880f-c8296b62acc2"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Hold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""baf70a18-b1d1-4cb5-9b5a-e7e3315ba260"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Hold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -305,6 +402,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         m_Main_CCW2Rotation = m_Main.FindAction("CCW2 Rotation", throwIfNotFound: true);
         m_Main_UDRotation = m_Main.FindAction("UD Rotation", throwIfNotFound: true);
         m_Main_UD2Rotation = m_Main.FindAction("UD2 Rotation", throwIfNotFound: true);
+        m_Main_Hold = m_Main.FindAction("Hold", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -371,6 +469,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_CCW2Rotation;
     private readonly InputAction m_Main_UDRotation;
     private readonly InputAction m_Main_UD2Rotation;
+    private readonly InputAction m_Main_Hold;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
@@ -382,6 +481,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         public InputAction @CCW2Rotation => m_Wrapper.m_Main_CCW2Rotation;
         public InputAction @UDRotation => m_Wrapper.m_Main_UDRotation;
         public InputAction @UD2Rotation => m_Wrapper.m_Main_UD2Rotation;
+        public InputAction @Hold => m_Wrapper.m_Main_Hold;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -412,6 +512,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @UD2Rotation.started -= m_Wrapper.m_MainActionsCallbackInterface.OnUD2Rotation;
                 @UD2Rotation.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnUD2Rotation;
                 @UD2Rotation.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnUD2Rotation;
+                @Hold.started -= m_Wrapper.m_MainActionsCallbackInterface.OnHold;
+                @Hold.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnHold;
+                @Hold.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnHold;
             }
             m_Wrapper.m_MainActionsCallbackInterface = instance;
             if (instance != null)
@@ -437,6 +540,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @UD2Rotation.started += instance.OnUD2Rotation;
                 @UD2Rotation.performed += instance.OnUD2Rotation;
                 @UD2Rotation.canceled += instance.OnUD2Rotation;
+                @Hold.started += instance.OnHold;
+                @Hold.performed += instance.OnHold;
+                @Hold.canceled += instance.OnHold;
             }
         }
     }
@@ -468,5 +574,6 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         void OnCCW2Rotation(InputAction.CallbackContext context);
         void OnUDRotation(InputAction.CallbackContext context);
         void OnUD2Rotation(InputAction.CallbackContext context);
+        void OnHold(InputAction.CallbackContext context);
     }
 }

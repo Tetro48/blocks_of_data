@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
+using System.Collections.Generic;
 
 public class PlayerSystem : SystemBase
 {
@@ -31,6 +32,18 @@ public class PlayerSystem : SystemBase
         }
         return blobBuilder.CreateBlobAssetReference<PieceBlob>(Allocator.Persistent);
     }
+    public static List<T> Shuffle<T>(List<T> _list, Random random)
+    {
+        for (int i = 0; i < _list.Count; i++)
+        {
+            T temp = _list[i];
+            int randomIndex = random.NextInt(i, _list.Count);
+            _list[i] = _list[randomIndex];
+            _list[randomIndex] = temp;
+        }
+
+        return _list;
+    }
     protected override void OnUpdate()
     {
         float deltaTime = Time.DeltaTime;
@@ -43,16 +56,29 @@ public class PlayerSystem : SystemBase
             inputs.Main.CW2Rotation.WasPressedThisFrame(),
             inputs.Main.UD2Rotation.WasPressedThisFrame(),
             inputs.Main.CCWRotation.WasPressedThisFrame(),
-            false,
+            inputs.Main.Hold.WasPressedThisFrame(),
             inputs.Main.CCW2Rotation.WasPressedThisFrame(),
             false);
         BlobAssetReference<PieceBlob> collisionRef = pieceCollisionReference, JLSTZoffsets = JLSTZpieceOffsetReference;
         //for easier debugging, use .WithoutBurst().Run(), otherwise, .ScheduleParallel()
-        Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board) =>
+        Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerBag> bag) =>
         {
             if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
-                player.textureID = (byte)player.random.NextUInt(6);
+                if(bag.Length == 0 || bag.Length == 6)
+                {
+                    FixedList32<byte> bagshuff = new FixedList32<byte>(){0,1,2,3,4,5,6};
+                    for (int i = 0; i < 7; i++)
+                    {
+                        byte temp = bagshuff[i];
+                        int randomIndex = player.random.NextInt(i, 7);
+                        bagshuff[i] = bagshuff[randomIndex];
+                        bagshuff[randomIndex] = temp;
+                        bag.Add(new PlayerBag{value = new byte2(bagshuff[i], 4)});
+                    }
+                }
+                player.textureID = bag[0];
+                bag.RemoveAt(0);
                 //bitwise left shifting?
                 player.minoIndex = player.textureID << 4;
                 player.rotationIndex = 0;
@@ -74,6 +100,27 @@ public class PlayerSystem : SystemBase
                 player.movement = movement;
                 player.inputs = jobBoolInputs;    
             }
+
+            if (player.inputs.c1.z)
+            {
+                int localMinoIndex, localMinos;
+                if (player.holdMinos > 0)
+                {
+                    localMinoIndex = player.minoIndex;
+                    localMinos = player.minos;
+                    player.minoIndex = player.holdMinoIndex;
+                    player.minos = player.holdMinos;
+                    player.holdMinoIndex = localMinoIndex;
+                    player.holdMinos = localMinos;
+                }
+                else
+                {
+                    player.spawnTicks = player.spawnDelay;
+                    player.pieceSpawned = false;
+                    player.holdMinoIndex = player.minoIndex;
+                    player.holdMinos = player.minos;
+                }
+            }
                 
             #region Piece Movement
                 
@@ -81,7 +128,7 @@ public class PlayerSystem : SystemBase
             {
                 player.fallenTiles += player.gravity * deltaTime * player.softDropMultiplier;
             }
-            if (player.movement.y > 0.5f)
+            if (player.movement.y > 0.5f && player.movement.y != player.prevMovement.y)
             {
                 player.fallenTiles = 999;
                 player.lockTicks = player.lockDelay;
@@ -89,6 +136,7 @@ public class PlayerSystem : SystemBase
             if (player.autoShiftTicks == 0f && player.movement.x != 0)
             {
                 movePiece(board, collisionRef, ref player, new int2(player.movement.x > 0f ? 1 : -1, 0));
+                player.lockTicks = 0f;
             }
             if (player.movement.x > 0.3f) player.autoShiftTicks += deltaTime;
             if (player.movement.x < -0.3f) player.autoShiftTicks -= deltaTime;
@@ -155,6 +203,7 @@ public class PlayerSystem : SystemBase
                 }
             }
             if (tilesCounted > 0) movePiece(board, in collisionRef, ref player, new int2(0, -tilesCounted));
+            #endregion
             if (player.touchedGround) player.lockTicks += deltaTime;
             if (player.lockTicks > player.lockDelay && player.pieceSpawned)
             {
@@ -162,9 +211,8 @@ public class PlayerSystem : SystemBase
                 player.lockTicks = 0f;
                 player.pieceSpawned = false;
             }
-            #endregion
             player.prevMovement = movement;
-        }).WithoutBurst().ScheduleParallel();
+        }).ScheduleParallel();
         previousMovement = movement;
     }
 
@@ -188,15 +236,26 @@ public class PlayerSystem : SystemBase
         }
         int2 offsetVal1, offsetVal2, endOffset;
         int blobIndexSize = curOffsetData.Value.array.Length / 4;
+        bool canMove = false;
+        player.minoIndex += (player.rotationIndex - oldRotIndex)<<2;
         for (int testIndex = 0; testIndex < blobIndexSize; testIndex++)
         {
             offsetVal1 = curOffsetData.Value.array[oldRotIndex + testIndex * 4];
             offsetVal2 = curOffsetData.Value.array[player.rotationIndex + testIndex * 4];
             endOffset = offsetVal1 - offsetVal2;
-            if (movePiece(board, pieceCollision, ref player, endOffset)) break;
-            if (testIndex == blobIndexSize - 1) player.rotationIndex = oldRotIndex;
+            if (checkMovement(board, pieceCollision, player.minoIndex, player.minos, player.piecePos+endOffset))
+            {
+                canMove = true;
+                movePiece(board, pieceCollision, ref player, endOffset);
+                player.lockTicks = 0f;
+                break;
+            }
         }
-        player.minoIndex += (player.rotationIndex - oldRotIndex)<<2;
+        if (!canMove)
+        {
+            player.minoIndex -= (player.rotationIndex - oldRotIndex)<<2;
+            player.rotationIndex = oldRotIndex;
+        }
     }
 
     private static int ArrayFlatIndexing(int[] arraySizes, params int[] indexArray)
