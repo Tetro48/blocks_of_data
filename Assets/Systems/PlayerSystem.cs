@@ -51,9 +51,7 @@ public class PlayerSystem : SystemBase
         {
             if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
-                uint uint1 = player.random.NextUInt(6);
-                byte convertedInt = (byte)uint1;
-                player.textureID = convertedInt;
+                player.textureID = (byte)player.random.NextUInt(6);
                 //bitwise left shifting?
                 player.minoIndex = player.textureID << 4;
                 player.rotationIndex = 0;
