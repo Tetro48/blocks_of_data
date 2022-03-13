@@ -51,11 +51,8 @@ public class PlayerSystem : SystemBase
         {
             if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
-                UnityEngine.Debug.Log("Spawned!");
                 uint uint1 = player.random.NextUInt(6);
-                UnityEngine.Debug.Log("uint1:"+uint1);
                 byte convertedInt = (byte)uint1;
-                UnityEngine.Debug.Log("textureid:"+convertedInt+". index:"+(convertedInt<<4));
                 player.textureID = convertedInt;
                 //bitwise left shifting?
                 player.minoIndex = player.textureID << 4;
@@ -92,7 +89,6 @@ public class PlayerSystem : SystemBase
             }
             if (player.autoShiftTicks == 0f && player.movement.x != 0)
             {
-                UnityEngine.Debug.Log("Moved!");
                 movePiece(board, collisionRef, ref player, new int2(player.movement.x > 0f ? 1 : -1, 0));
             }
             if (player.movement.x > 0.3f) player.autoShiftTicks += deltaTime;
@@ -169,7 +165,7 @@ public class PlayerSystem : SystemBase
             }
             #endregion
             player.prevMovement = movement;
-        }).WithoutBurst().Schedule();
+        }).ScheduleParallel();
         previousMovement = movement;
     }
 
@@ -185,7 +181,6 @@ public class PlayerSystem : SystemBase
         {
             player.rotationIndex += maxRotIndex;
         }
-        UnityEngine.Debug.Log("old rot index: " + oldRotIndex + ". new rot index: " + player.rotationIndex);
         player.minoIndex += (player.rotationIndex - oldRotIndex)<<2;
     }
 
