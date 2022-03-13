@@ -5,7 +5,8 @@ using Unity.Mathematics;
 [Serializable, GenerateAuthoringComponent]
 public struct PlayerComponent : IComponentData
 {
-    public byte textureID, rotationIndex;
+    public byte textureID;
+    public sbyte rotationIndex;
     public int lines;
     public int minoIndex, minos;
     public bool isControllable, pieceSpawned, touchedGround;

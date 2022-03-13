@@ -45,7 +45,7 @@ public class PlayerSystem : SystemBase
             inputs.Main.UD2Rotation.WasPressedThisFrame(),
             false,
             false);
-        BlobAssetReference<PieceBlob> collisionRef = pieceCollisionReference;
+        BlobAssetReference<PieceBlob> collisionRef = pieceCollisionReference, JLSTZoffsets = JLSTZpieceOffsetReference;
         //for easier debugging, use .WithoutBurst().Run(), otherwise, .ScheduleParallel()
         Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board) =>
         {
@@ -125,15 +125,15 @@ public class PlayerSystem : SystemBase
             #region Piece Rotation
             if (player.inputs.c0.x | player.inputs.c0.y)
             {
-                RotatePiece(ref player, 1);
+                RotatePiece(board, ref player, collisionRef, JLSTZoffsets, 1);
             }
             if (player.inputs.c0.z | player.inputs.c0.w)
             {
-                RotatePiece(ref player, -1);
+                RotatePiece(board, ref player, collisionRef, JLSTZoffsets, -1);
             }
             if (player.inputs.c1.x | player.inputs.c1.y)
             {
-                RotatePiece(ref player, 2);
+                RotatePiece(board, ref player, collisionRef, JLSTZoffsets, 2);
             }
             #endregion
             
@@ -163,21 +163,37 @@ public class PlayerSystem : SystemBase
             }
             #endregion
             player.prevMovement = movement;
-        }).ScheduleParallel();
+        }).WithoutBurst().ScheduleParallel();
         previousMovement = movement;
     }
 
-    private static void RotatePiece(ref PlayerComponent player, in sbyte addRotIndex, in byte maxRotIndex = 4)
+    //this is a lot to even rotate and offset.
+    private static void RotatePiece(in DynamicBuffer<PlayerBoard> board,
+        ref PlayerComponent player,
+        BlobAssetReference<PieceBlob> pieceCollision,
+        BlobAssetReference<PieceBlob> curOffsetData,
+        in sbyte addRotIndex,
+        in sbyte maxRotIndex = 4)
     {
-        byte oldRotIndex = player.rotationIndex;
-        player.rotationIndex += (byte)addRotIndex;
+        sbyte oldRotIndex = player.rotationIndex;
+        player.rotationIndex += addRotIndex;
         if (player.rotationIndex > maxRotIndex - 1)
         {
             player.rotationIndex -= maxRotIndex;
         }
-        if (player.rotationIndex > 0x80)
+        if (player.rotationIndex < 0)
         {
             player.rotationIndex += maxRotIndex;
+        }
+        int2 offsetVal1, offsetVal2, endOffset;
+        int blobIndexSize = curOffsetData.Value.array.Length / 4;
+        for (int testIndex = 0; testIndex < blobIndexSize; testIndex++)
+        {
+            offsetVal1 = curOffsetData.Value.array[oldRotIndex + testIndex * 4];
+            offsetVal2 = curOffsetData.Value.array[player.rotationIndex + testIndex * 4];
+            endOffset = offsetVal1 - offsetVal2;
+            if (movePiece(board, pieceCollision, ref player, endOffset)) break;
+            if (testIndex == blobIndexSize - 1) player.rotationIndex = oldRotIndex;
         }
         player.minoIndex += (player.rotationIndex - oldRotIndex)<<2;
     }

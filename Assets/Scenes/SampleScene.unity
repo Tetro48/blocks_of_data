@@ -416,7 +416,7 @@ MonoBehaviour:
   isControllable: 1
   pieceSpawned: 1
   touchedGround: 0
-  lockDelay: 0
+  lockDelay: 0.5
   lockTicks: 0
   delayedAutoShift: 0.25
   autoShiftTicks: 0
