@@ -58,6 +58,7 @@ public class RenderSystem : SystemBase
             {
                 if(board[i].value < 128)matrices.Add(Matrix4x4.Translate(transform.Value + new float3(i%10, math.floor(i/10), 0f)));
             }
+            if (player.pieceSpawned)
             for (int i = 0; i < player.minos; i++)
             {
                 matrices.Add(Matrix4x4.Translate(transform.Value + new float3(player.piecePos + StaticPiecePositions.pieceCollision[player.minoIndex+i], 0f)));
