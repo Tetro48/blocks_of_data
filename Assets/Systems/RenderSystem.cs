@@ -52,6 +52,8 @@ public class RenderSystem : SystemBase
     protected override void OnUpdate()
     {
         // if(isRendererOn)
+        
+        BlobAssetReference<PieceBlob> collisionRef = PlayerSystem.pieceCollisionReference;
         Entities.ForEach((in PlayerComponent player, in DynamicBuffer<PlayerBoard> board, in DynamicBuffer<PlayerBag> bag, in Translation transform) => {
             matrices = new NativeList<Matrix4x4>(Allocator.Temp);
             for (int i = 0; i < board.Length; i++)
@@ -61,14 +63,18 @@ public class RenderSystem : SystemBase
             if (player.pieceSpawned)
             for (int i = 0; i < player.minos; i++)
             {
-                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(player.piecePos + StaticPiecePositions.pieceCollision[player.minoIndex+i], 0f)));
+                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(player.piecePos + collisionRef.Value.array[player.minoIndex+i], 0f)));
             }
             for (int i = 0; i < math.min(bag.Length, 6); i++)
             {
                 for (int j = 0; j < bag[i].value.y; j++)
                 {
-                    matrices.Add(Matrix4x4.Translate(transform.Value + new float3(new int2(14, 22 - (3 * i)) + StaticPiecePositions.pieceCollision[(bag[i].value.x<<4)+j], 0f)));
+                    matrices.Add(Matrix4x4.Translate(transform.Value + new float3(new int2(14, 21 - (3 * i)) + collisionRef.Value.array[(bag[i].value.x<<4)+j], 0f)));
                 }
+            }
+            for (int j = 0; j < player.holdMinos; j++)
+            {
+                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(new int2(-8, 21) + collisionRef.Value.array[(player.holdMinoIndex)+j], 0f)));
             }
             Graphics.DrawMeshInstanced(cubeMesh, 0, material, matrices.ToArray());
             matrices.Dispose();

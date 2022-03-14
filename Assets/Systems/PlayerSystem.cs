@@ -11,7 +11,7 @@ public class PlayerSystem : SystemBase
     private Inputs inputs;
     private float2 previousMovement;
     private BlobAssetStore blobAssetStore;
-    private BlobAssetReference<PieceBlob> pieceCollisionReference, JLSTZpieceOffsetReference;
+    public static BlobAssetReference<PieceBlob> pieceCollisionReference, JLSTZpieceOffsetReference;
     
     protected override void OnCreate()
     {
@@ -63,6 +63,30 @@ public class PlayerSystem : SystemBase
         //for easier debugging, use .WithoutBurst().Run(), otherwise, .ScheduleParallel()
         Entities.ForEach((ref PlayerComponent player, ref DynamicBuffer<PlayerBoard> board, ref DynamicBuffer<PlayerBag> bag) =>
         {
+            if (player.inputs.c1.z && !player.isHoldExecuted && player.pieceSpawned)
+            {
+                int localMinoIndex, localMinos;
+                player.minoIndex -= player.rotationIndex<<2;
+                player.rotationIndex = 0;
+                player.isHoldExecuted = true;
+                if (player.holdMinos > 0)
+                {
+                    player.piecePos = new int2(4, 21);
+                    localMinoIndex = player.minoIndex;
+                    localMinos = player.minos;
+                    player.minoIndex = player.holdMinoIndex;
+                    player.minos = player.holdMinos;
+                    player.holdMinoIndex = localMinoIndex;
+                    player.holdMinos = localMinos;
+                }
+                else
+                {
+                    player.spawnTicks = player.spawnDelay;
+                    player.pieceSpawned = false;
+                    player.holdMinoIndex = player.minoIndex;
+                    player.holdMinos = player.minos;
+                }
+            }
             if (player.spawnTicks > player.spawnDelay && !player.pieceSpawned)
             {
                 if(bag.Length == 0 || bag.Length == 6)
@@ -101,28 +125,6 @@ public class PlayerSystem : SystemBase
                 player.inputs = jobBoolInputs;    
             }
 
-            if (player.inputs.c1.z && !player.isHoldExecuted)
-            {
-                int localMinoIndex, localMinos;
-                player.minoIndex -= player.rotationIndex<<2;
-                player.rotationIndex = 0;
-                if (player.holdMinos > 0)
-                {
-                    localMinoIndex = player.minoIndex;
-                    localMinos = player.minos;
-                    player.minoIndex = player.holdMinoIndex;
-                    player.minos = player.holdMinos;
-                    player.holdMinoIndex = localMinoIndex;
-                    player.holdMinos = localMinos;
-                }
-                else
-                {
-                    player.spawnTicks = player.spawnDelay;
-                    player.pieceSpawned = false;
-                    player.holdMinoIndex = player.minoIndex;
-                    player.holdMinos = player.minos;
-                }
-            }
                 
             #region Piece Movement
                 
@@ -210,6 +212,7 @@ public class PlayerSystem : SystemBase
             if (player.lockTicks > player.lockDelay && player.pieceSpawned)
             {
                 lockPiece(ref board, ref player, in collisionRef);
+                player.isHoldExecuted = false;
                 player.lockTicks = 0f;
                 player.pieceSpawned = false;
             }
