@@ -51,9 +51,9 @@ public class RenderSystem : SystemBase
     }
     protected override void OnUpdate()
     {
-        // if(isRendererOn)
         
         BlobAssetReference<PieceBlob> collisionRef = PlayerSystem.pieceCollisionReference;
+        // if(isRendererOn)
         Entities.ForEach((in PlayerComponent player, in DynamicBuffer<PlayerBoard> board, in DynamicBuffer<PlayerBag> bag, in Translation transform) => {
             matrices = new NativeList<Matrix4x4>(Allocator.Temp);
             for (int i = 0; i < board.Length; i++)
@@ -74,7 +74,7 @@ public class RenderSystem : SystemBase
             }
             for (int j = 0; j < player.holdMinos; j++)
             {
-                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(new int2(-8, 21) + collisionRef.Value.array[(player.holdMinoIndex)+j], 0f)));
+                matrices.Add(Matrix4x4.Translate(transform.Value + new float3(new int2(-5, 21) + collisionRef.Value.array[(player.holdMinoIndex)+j], 0f)));
             }
             Graphics.DrawMeshInstanced(cubeMesh, 0, material, matrices.ToArray());
             matrices.Dispose();

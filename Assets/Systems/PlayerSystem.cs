@@ -74,6 +74,7 @@ public class PlayerSystem : SystemBase
                     player.piecePos = new int2(4, 21);
                     localMinoIndex = player.minoIndex;
                     localMinos = player.minos;
+                    player.touchedGround = false;
                     player.minoIndex = player.holdMinoIndex;
                     player.minos = player.holdMinos;
                     player.holdMinoIndex = localMinoIndex;
@@ -253,6 +254,7 @@ public class PlayerSystem : SystemBase
                 canMove = true;
                 movePiece(board, pieceCollision, ref player, endOffset);
                 player.lockTicks = 0f;
+                player.touchedGround = false;
                 break;
             }
         }
