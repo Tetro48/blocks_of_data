@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using System.Collections.Generic;
 
-public class PlayerSystem : SystemBase
+public partial class PlayerSystem : SystemBase
 {
     private Inputs inputs;
     private float2 previousMovement;
@@ -92,7 +92,7 @@ public class PlayerSystem : SystemBase
             {
                 if(bag.Length == 0 || bag.Length == 6)
                 {
-                    FixedList32<byte> bagshuff = new FixedList32<byte>(){0,1,2,3,4,5,6};
+                    FixedList32Bytes<byte> bagshuff = new FixedList32Bytes<byte>(){0,1,2,3,4,5,6};
                     for (int i = 0; i < 7; i++)
                     {
                         byte temp = bagshuff[i];
@@ -104,7 +104,7 @@ public class PlayerSystem : SystemBase
                 }
                 player.textureID = bag[0];
                 bag.RemoveAt(0);
-                //bitwise left shifting?
+                //bitwise left shifting? integer << 4 is equvalent to integer * 16
                 player.minoIndex = player.textureID << 4;
                 player.rotationIndex = 0;
                 player.piecePos = new int2(4, 21);
@@ -241,26 +241,29 @@ public class PlayerSystem : SystemBase
             player.rotationIndex += maxRotIndex;
         }
         int2 offsetVal1, offsetVal2, endOffset;
-        int blobIndexSize = curOffsetData.Value.array.Length / 4;
+        int blobIndexSize = curOffsetData.Value.array.Length / maxRotIndex;
         bool canMove = false;
-        player.minoIndex += (player.rotationIndex - oldRotIndex)<<2;
+        player.minoIndex += (player.rotationIndex - oldRotIndex) * player.minos;
+        //Kick operation
         for (int testIndex = 0; testIndex < blobIndexSize; testIndex++)
         {
-            offsetVal1 = curOffsetData.Value.array[oldRotIndex + testIndex * 4];
-            offsetVal2 = curOffsetData.Value.array[player.rotationIndex + testIndex * 4];
+            offsetVal1 = curOffsetData.Value.array[oldRotIndex + testIndex * maxRotIndex];
+            offsetVal2 = curOffsetData.Value.array[player.rotationIndex + testIndex * maxRotIndex];
             endOffset = offsetVal1 - offsetVal2;
             if (checkMovement(board, pieceCollision, player.minoIndex, player.minos, player.piecePos+endOffset))
             {
+                //If the kick is successful
                 canMove = true;
-                movePiece(board, pieceCollision, ref player, endOffset);
+                player.piecePos += endOffset;
                 player.lockTicks = 0f;
                 player.touchedGround = false;
                 break;
             }
         }
+        //If the kick isn't successful.
         if (!canMove)
         {
-            player.minoIndex -= (player.rotationIndex - oldRotIndex)<<2;
+            player.minoIndex -= (player.rotationIndex - oldRotIndex) * player.minos;
             player.rotationIndex = oldRotIndex;
         }
     }

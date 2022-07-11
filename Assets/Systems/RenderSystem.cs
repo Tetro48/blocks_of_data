@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public class RenderSystem : SystemBase
+public partial class RenderSystem : SystemBase
 {
     bool isRendererOn = true;
     Material material;
@@ -51,11 +51,10 @@ public class RenderSystem : SystemBase
     }
     protected override void OnUpdate()
     {
-        
         BlobAssetReference<PieceBlob> collisionRef = PlayerSystem.pieceCollisionReference;
         // if(isRendererOn)
         Entities.ForEach((in PlayerComponent player, in DynamicBuffer<PlayerBoard> board, in DynamicBuffer<PlayerBag> bag, in Translation transform) => {
-            matrices = new NativeList<Matrix4x4>(Allocator.Temp);
+            var matrices = new NativeList<Matrix4x4>(Allocator.Temp);
             for (int i = 0; i < board.Length; i++)
             {
                 if(board[i].value < 128)matrices.Add(Matrix4x4.Translate(transform.Value + new float3(i%10, math.floor(i/10), 0f)));
